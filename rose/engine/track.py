@@ -1,5 +1,8 @@
+import csv
 import random
 
+import os
+import csv
 from rose.engine import config
 from rose.common import obstacles
 
@@ -9,13 +12,17 @@ class Track(object):
         self._matrix = None
         self.is_track_random = is_track_random
         self.reset()
+        self.custom_index = 0
 
-    # Game state interface
-
+        # Game state interface
     def update(self):
         """Go to the next game state"""
         self._matrix.pop()
-        self._matrix.insert(0, self._generate_row())
+        if os.path.exists("custom_map.csv"):
+            custom_map = self.load_custom_map("custom_map.csv")
+            self._matrix.insert(0, self.generate_custom_map(custom_map))
+        else:
+            self._matrix.insert(0, self._generate_row())
 
     def state(self):
         """Return read only serialize-able state for sending to client"""
@@ -80,3 +87,26 @@ class Track(object):
                 row[cell + lane * config.cells_per_player] = obstacle
 
         return row
+
+    def load_custom_map(self, filename):
+        map_data = []
+        try:
+            with open(filename, "r", encoding="utf-8") as f:
+                reader = csv.reader(f)
+                for row in reader:
+                    map_data.append(row)
+        except Exception as e:
+            print(f"Error loading file: {e}")
+        return map_data
+
+    def generate_custom_map(self,custom_map):
+        if self.custom_index >= len(custom_map):
+            self.custom_index = 0
+
+        row = custom_map[self.custom_index]
+        self.custom_index += 1
+
+        return [
+            getattr(obstacles, value.upper(), obstacles.NONE) if value else obstacles.NONE
+            for value in row
+        ]
