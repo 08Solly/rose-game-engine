@@ -32,3 +32,20 @@ class CsvFileHandler:
             print(f"Error writing to CSV: {e}")
             return False
 
+    def read_as_matrix(self) -> list[list[str]]:
+        """
+        Reads the CSV file and returns its content as a matrix (list of rows).
+
+        Returns:
+        list[list[str]]: The content of the CSV as a list of string rows.
+        """
+        matrix = []
+        try:
+            with self.file_path.open('r', newline='', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    matrix.append(row)
+            return matrix
+        except Exception as e:
+            print(f"Error reading CSV: {e}")
+            return []
