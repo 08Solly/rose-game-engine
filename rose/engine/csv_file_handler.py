@@ -1,21 +1,11 @@
 import csv
 from pathlib import Path
+from
 
 class CsvFileHandler:
 
-    def __init__(self, file_path: Path | str | None = None) -> None:
-        self.file_path: Path | None= Path(file_path)
-
-        if file_path is not None:
-            if not file_path.exists():
-                self.file_path = None
-            if file_path.name.endswith('.csv'):
-                self.file_path = None
-
-
-
-
-    def add_line(self, row: list[str]) -> bool:
+    @staticmethod
+    def add_line(self,file_path: Path | str , row: list[str]) -> bool:
         """
         Appends a list of strings as a new row to the CSV file.
 
@@ -25,6 +15,7 @@ class CsvFileHandler:
         Returns:
         bool: True if the write succeeded.
         """
+
         try:
             with open(self.file_path, mode='a', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
