@@ -6,10 +6,12 @@ class CsvFileHandler:
     def __init__(self, file_path: Path | str | None = None) -> None:
         self.file_path: Path | None= Path(file_path)
 
-        if not file_path.with_suffix('.csv'):
-            self.file_path = None
-        if not file_path.exists():
-            self.file_path = None
+        if file_path is not None:
+            if not file_path.exists():
+                self.file_path = None
+            if file_path.name.endswith('.csv'):
+                self.file_path = None
+
 
 
 
