@@ -4,8 +4,13 @@ from pathlib import Path
 class CsvFileHandler:
 
     def __init__(self, file_path: Path | str | None = None) -> None:
-        assert file_path.with_suffix('.csv')
         self.file_path: Path | None= Path(file_path)
+
+        if not file_path.with_suffix('.csv'):
+            self.file_path = None
+        if not file_path.exists():
+            self.file_path = None
+
 
 
     def add_line(self, row: list[str]) -> bool:
