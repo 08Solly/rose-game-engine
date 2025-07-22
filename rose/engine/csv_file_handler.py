@@ -5,7 +5,7 @@ from
 class CsvFileHandler:
 
     @staticmethod
-    def add_line(self,file_path: Path | str , row: list[str]) -> bool:
+    def add_line(self,file_path: Path | str, row: list[str]) -> bool:
         """
         Appends a list of strings as a new row to the CSV file.
 
@@ -16,6 +16,21 @@ class CsvFileHandler:
         bool: True if the write succeeded.
         """
 
+        # Making sure file path is type Path
+        file_path: Path = Path(file_path)
+
+        # Checking if file exists
+        if not file_path.exists():
+            print(f"File {file_path.name} doesnt exist")
+            return False
+
+        # Checking if file is CSV
+        if not file_path.name.endswith('.csv'):
+            print(f"File {file_path.name} isn't CSV file")
+            return False
+
+
+        # Writing to file
         try:
             with open(self.file_path, mode='a', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
