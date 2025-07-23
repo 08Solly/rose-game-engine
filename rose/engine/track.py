@@ -1,12 +1,19 @@
 import random
 from typing import Union
 import os
+import random
 from rose.engine import config
 from rose.common import obstacles
 from rose.engine import csv_file_handler
 
 
 class Track(object):
+    """
+    Initialize the Track object.
+
+    Args:
+        is_track_random (bool): Whether the track should be generated randomly per player.
+    """
     def __init__(self, is_track_random=False) -> None:
         self._matrix: Union[list[list[str]], None] = None
         self.is_track_random: bool = is_track_random
@@ -16,7 +23,11 @@ class Track(object):
 
         # Game state interface
     def update(self) -> None:
-        """Go to the next game state"""
+        """
+        Advance the game state by one step:
+        - If a valid custom map exists and is enabled, generate a row from it.
+        - Otherwise, generate a random row.
+        """
         self._matrix.pop()
         map_name: str = "map/custom_map.csv"
         if os.path.exists(map_name) and self.custom_map != [] and ("disabled" not in map_name):
@@ -72,7 +83,7 @@ class Track(object):
         row: list[str] = [obstacles.NONE] * config.matrix_width
 
         # Get a random obstacle
-        obstacle:str = obstacles.get_random_obstacle()
+        obstacle: str = obstacles.get_random_obstacle()
 
         if self.is_track_random:
             for lane in range(config.max_players):
@@ -90,6 +101,18 @@ class Track(object):
         return row
 
     def check_obstacle(self, custom_map) -> list[list[str]]:
+        """
+        Validates that all obstacles in the custom map are valid.
+        Replaces any invalid obstacle with a random one.
+
+        Args:
+            custom_map (list[list[str]]): The loaded map as strings.
+
+        Returns:
+            list[list[str]]: Validated map with corrected obstacles.
+        """
+
+
         for row in range(len(custom_map)-1):
             for col in range(len(custom_map[row])-1):
                 if custom_map[row][col] not in obstacles.ALL:
@@ -98,6 +121,16 @@ class Track(object):
         return custom_map
 
     def generate_custom_map(self, custom_map) -> list[str]:
+        """
+        Returns the next row from the custom map as a list of obstacle objects.
+
+        Args:
+            custom_map (list[list[str]]): The full custom map as strings.
+
+        Returns:
+            list: A row of obstacles for insertion into the matrix.
+        """
+
         if self.custom_index >= len(custom_map):
             self.custom_index = 0
 
