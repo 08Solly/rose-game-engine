@@ -16,6 +16,9 @@ class Track(object):
         if self.map_name != [] and ("disabled" not in self.map_name[0]):
             self.custom_map = csv_file_handler.CsvFileHandler.read_as_matrix(f"map/{self.map_name[0]}")
 
+
+
+
         # Game state interface
     def update(self):
         """Go to the next game state"""
