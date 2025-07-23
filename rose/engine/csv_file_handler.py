@@ -1,10 +1,12 @@
 import csv
 from pathlib import Path
+from typing import Union, Optional
+
 
 class CsvFileHandler:
 
-    def __init__(self, file_path: Path | str | None = None) -> None:
-        self.file_path: Path | None= Path(file_path)
+    def __init__(self, file_path: Union[Path, str, None] = None) -> None:
+        self.file_path: Optional[Path] = Path(file_path)
 
         if not file_path.with_suffix('.csv'):
             self.file_path = None

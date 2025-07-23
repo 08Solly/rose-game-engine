@@ -5,6 +5,7 @@ import os
 import csv
 from rose.engine import config
 from rose.common import obstacles
+from rose.engine import csv_file_handler
 
 
 class Track(object):
@@ -13,13 +14,15 @@ class Track(object):
         self.is_track_random = is_track_random
         self.reset()
         self.custom_index = 0
+        self.custom_map_file = csv_file_handler.CsvFileHandler("custom_map.csv")
 
         # Game state interface
     def update(self):
         """Go to the next game state"""
         self._matrix.pop()
-        if os.path.exists("custom_map.csv"):
-            custom_map = self.load_custom_map("custom_map.csv")
+        custom_map = self.custom_map_file.read_as_matrix()
+        if os.path.exists("custom_map.csv") and custom_map != []:
+            # custom_map = self.load_custom_map("custom_map.csv")
             self._matrix.insert(0, self.generate_custom_map(custom_map))
         else:
             self._matrix.insert(0, self._generate_row())
@@ -88,16 +91,16 @@ class Track(object):
 
         return row
 
-    def load_custom_map(self, filename):
-        map_data = []
-        try:
-            with open(filename, "r", encoding="utf-8") as f:
-                reader = csv.reader(f)
-                for row in reader:
-                    map_data.append(row)
-        except Exception as e:
-            print(f"Error loading file: {e}")
-        return map_data
+    # def load_custom_map(self, filename):
+    #     map_data = []
+    #     try:
+    #         with open(filename, "r", encoding="utf-8") as f:
+    #             reader = csv.reader(f)
+    #             for row in reader:
+    #                 map_data.append(row)
+    #     except Exception as e:
+    #         print(f"Error loading file: {e}")
+    #     return map_data
 
     def generate_custom_map(self,custom_map):
         if self.custom_index >= len(custom_map):
