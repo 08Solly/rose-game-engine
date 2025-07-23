@@ -18,7 +18,8 @@ class Track(object):
     def update(self):
         """Go to the next game state"""
         self._matrix.pop()
-        if os.path.exists("map/custom_map.csv") and self.custom_map != []:
+        map_name = "map/custom_map.csv"
+        if os.path.exists(map_name) and self.custom_map != [] and ("disabled" not in map_name):
             self.custom_map = self.check_obstacle(self.custom_map)
             self._matrix.insert(0, self.generate_custom_map(self.custom_map))
         else:
