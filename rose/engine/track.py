@@ -2,7 +2,6 @@ import csv
 import random
 
 import os
-import csv
 from rose.engine import config
 from rose.common import obstacles
 from rose.engine import csv_file_handler
