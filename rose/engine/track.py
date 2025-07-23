@@ -12,14 +12,15 @@ class Track(object):
         self.is_track_random = is_track_random
         self.reset()
         self.custom_index = 0
-        self.custom_map = csv_file_handler.CsvFileHandler.read_as_matrix("map/custom_map.csv")
+        self.map_name = os.listdir("map")
+        if self.map_name != [] and ("disabled" not in self.map_name[0]):
+            self.custom_map = csv_file_handler.CsvFileHandler.read_as_matrix(f"map/{self.map_name[0]}")
 
         # Game state interface
     def update(self):
         """Go to the next game state"""
         self._matrix.pop()
-        map_name = "map/custom_map.csv"
-        if os.path.exists(map_name) and self.custom_map != [] and ("disabled" not in map_name):
+        if self.custom_map != []:
             self.custom_map = self.check_obstacle(self.custom_map)
             self._matrix.insert(0, self.generate_custom_map(self.custom_map))
         else:
