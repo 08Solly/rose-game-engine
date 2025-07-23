@@ -14,13 +14,13 @@ class Track(object):
         self.is_track_random = is_track_random
         self.reset()
         self.custom_index = 0
-        self.custom_map_file = csv_file_handler.CsvFileHandler("custom_map.csv")
+        self.custom_map_file = csv_file_handler.CsvFileHandler()
 
         # Game state interface
     def update(self):
         """Go to the next game state"""
         self._matrix.pop()
-        custom_map = self.custom_map_file.read_as_matrix()
+        custom_map = self.custom_map_file.read_as_matrix("custom_map.csv")
         if os.path.exists("custom_map.csv") and custom_map != []:
             # custom_map = self.load_custom_map("custom_map.csv")
             self._matrix.insert(0, self.generate_custom_map(custom_map))
