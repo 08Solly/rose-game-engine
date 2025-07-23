@@ -2,6 +2,7 @@ import csv
 from pathlib import Path
 from typing import Union
 
+__all__ = ["CsvFileHandler"]
 
 class CsvFileHandler:
     @staticmethod
@@ -21,10 +22,6 @@ class CsvFileHandler:
         """
         try:
             path = Path(file_path)
-
-            if not path.exists():
-                print(f"[ERROR] File '{path}' does not exist.")
-                return False
 
             if path.suffix.lower() != ".csv":
                 print(f"[ERROR] File '{path}' is not a CSV file.")
@@ -80,14 +77,13 @@ class CsvFileHandler:
     @staticmethod
     def write_matrix_to_csv(file_path: Union[Path, str], matrix: list[list[str]]) -> bool:
         """
-        Writes a matrix to a CSV file, ensuring each row is 6 columns long.
-        - Pads short rows with empty strings.
-        - Truncates long rows to 6 columns.
-        - Writes up to 30 rows only.
-        - If matrix is empty, the CSV file is cleared.
+        Writes a matrix to a CSV file with the following constraints:
+        - Each row is exactly 6 columns (padded or truncated with "").
+        - Writes at most 30 rows.
+        - If matrix is empty, clears the CSV file.
 
         Args:
-            file_path (Union[Path, str]): The path to the CSV file.
+            file_path (Union[Path, str]): The CSV file path.
             matrix (list[list[str]]): The matrix to write (rows of strings).
 
         Returns:
@@ -96,20 +92,19 @@ class CsvFileHandler:
         try:
             path = Path(file_path)
 
-            if not path.suffix.lower() == ".csv":
+            if path.suffix.lower() != ".csv":
                 print(f"[ERROR] File '{path}' is not a CSV file.")
                 return False
 
             if not matrix:
-                # Clear file if matrix is empty
                 path.write_text("", encoding='utf-8')
                 return True
 
-            processed_matrix = [(row + [""] * 6)[:6] for row in matrix[:30]]
+            processed = [(row + [""] * 6)[:6] for row in matrix[:30]]
 
             with path.open(mode='w', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
-                writer.writerows(processed_matrix)
+                writer.writerows(processed)
 
             return True
 
