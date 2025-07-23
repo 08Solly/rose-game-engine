@@ -14,7 +14,7 @@ class Track(object):
     Args:
         is_track_random (bool): Whether the track should be generated randomly per player.
     """
-    def __init__(self, is_track_random=False) -> None:
+    def __init__(self, is_track_random: bool = False) -> None:
         self._matrix: Union[list[list[str]], None] = None
         self.is_track_random: bool = is_track_random
         self.reset()
@@ -51,15 +51,15 @@ class Track(object):
 
     # Track interface
 
-    def get(self, x, y) -> str:
+    def get(self, x: int , y: int) -> str:
         """Return the obstacle in position x, y"""
         return self._matrix[y][x]
 
-    def set(self, x, y, obstacle) -> None:
+    def set(self, x: int, y: int, obstacle: str) -> None:
         """Set obstacle in position x, y"""
         self._matrix[y][x] = obstacle
 
-    def clear(self, x, y) -> None:
+    def clear(self, x: int, y: int) -> None:
         """Clear obstacle in position x, y"""
         self._matrix[y][x] = obstacles.NONE
 
@@ -100,7 +100,7 @@ class Track(object):
 
         return row
 
-    def check_obstacle(self, custom_map) -> list[list[str]]:
+    def check_obstacle(self, custom_map:list[list[str]]) -> list[list[str]]:
         """
         Validates that all obstacles in the custom map are valid.
         Replaces any invalid obstacle with a random one.
@@ -120,7 +120,7 @@ class Track(object):
                     custom_map[row][col] = obstacles.get_random_obstacle()
         return custom_map
 
-    def generate_custom_map(self, custom_map) -> list[str]:
+    def generate_custom_map(self, custom_map: list[list[str]]) -> list[str]:
         """
         Returns the next row from the custom map as a list of obstacle objects.
 
