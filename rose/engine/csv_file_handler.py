@@ -73,3 +73,41 @@ class CsvFileHandler:
         except Exception as e:
             print(f"[ERROR] Unexpected error while reading from CSV: {e}")
             return []
+
+    @staticmethod
+    def write_matrix_to_csv(file_path: Union[Path, str], matrix: list[list[str]]) -> bool:
+        """
+        Writes a matrix to a CSV file, ensuring:
+        - Each row is exactly 6 columns (padded or truncated with "").
+        - Matrix is written as-is up to 30 rows (no padding to 30).
+        - If matrix is empty, the CSV file will be cleared.
+
+        Args:
+            file_path (Path | str): The path to the CSV file to write.
+            matrix (list[list[str]]): The matrix of string rows.
+
+        Returns:
+            bool: True if writing was successful, False otherwise.
+        """
+        try:
+            path = Path(file_path)
+            processed_matrix: list[list[str]] = []
+
+            if not matrix:
+                # Clear the file
+                path.write_text("")
+                return True
+
+            # Process existing rows up to 30
+            for row in matrix[:30]:
+                processed_matrix.append((row + [""] * 6)[:6])
+
+            with path.open('w', newline='', encoding='utf-8') as file:
+                writer = csv.writer(file)
+                writer.writerows(processed_matrix)
+
+            return True
+
+        except Exception as e:
+            print(f"[ERROR] Failed to write matrix to CSV: {e}")
+            return False
