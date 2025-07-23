@@ -1,7 +1,10 @@
 import argparse
 import asyncio
+from http.server import HTTPServer
 import logging
+import threading
 
+from fileRecieverServer import FileRecieverServer
 from rose.engine import server
 
 
@@ -55,5 +58,13 @@ def main():
     )
 
 
+def startServer():
+    server_address = ('', 8000)
+    httpd = HTTPServer(server_address, FileRecieverServer)
+    print("Serving on http://localhost:8000")
+    httpd.serve_forever()
+
 if __name__ == "__main__":
+    threading.Thread(target=startServer).start()
     main()
+    
