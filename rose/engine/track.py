@@ -1,8 +1,6 @@
-import csv
 import random
 
 import os
-import csv
 from rose.engine import config
 from rose.common import obstacles
 from rose.engine import csv_file_handler
@@ -14,13 +12,13 @@ class Track(object):
         self.is_track_random = is_track_random
         self.reset()
         self.custom_index = 0
-        self.custom_map = csv_file_handler.CsvFileHandler.read_as_matrix("custom_map.csv")
+        self.custom_map = csv_file_handler.CsvFileHandler.read_as_matrix("map/custom_map.csv")
 
         # Game state interface
     def update(self):
         """Go to the next game state"""
         self._matrix.pop()
-        if os.path.exists("custom_map.csv") and self.custom_map != []:
+        if os.path.exists("map/custom_map.csv") and self.custom_map != []:
             self._matrix.insert(0, self.generate_custom_map(self.custom_map))
         else:
             self._matrix.insert(0, self._generate_row())
