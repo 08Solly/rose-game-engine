@@ -22,6 +22,7 @@ class Track(object):
         """Go to the next game state"""
         self._matrix.pop()
         if os.path.exists("map/custom_map.csv") and self.custom_map != []:
+            self.custom_map = self.check_obstacle(self.custom_map)
             self._matrix.insert(0, self.generate_custom_map(self.custom_map))
         else:
             self._matrix.insert(0, self._generate_row())
@@ -90,6 +91,14 @@ class Track(object):
 
         return row
 
+    def check_obstacle(self, custom_map):
+        for row in range(len(custom_map)-1):
+            for col in range(len(custom_map[row])-1):
+                if custom_map[row][col] not in obstacles.ALL:
+                    print(custom_map[row][col])
+                    custom_map[row][col] = obstacles.get_random_obstacle()
+        return custom_map
+
     def generate_custom_map(self,custom_map):
         if self.custom_index >= len(custom_map):
             self.custom_index = 0
@@ -101,3 +110,4 @@ class Track(object):
             getattr(obstacles, value.upper(), obstacles.NONE) if value else obstacles.NONE
             for value in row
         ]
+
