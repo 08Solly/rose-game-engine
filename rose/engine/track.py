@@ -14,6 +14,9 @@ class Track(object):
         self.custom_index = 0
         self.custom_map = csv_file_handler.CsvFileHandler.read_as_matrix("map/custom_map.csv")
 
+
+
+
         # Game state interface
     def update(self):
         """Go to the next game state"""
