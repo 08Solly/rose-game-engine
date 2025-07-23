@@ -2,18 +2,22 @@ import csv
 from pathlib import Path
 from typing import Union
 
+
 class CsvFileHandler:
     @staticmethod
     def add_line(file_path: Union[Path, str], row: list[str]) -> bool:
         """
-        Appends a list of strings as a new row to a CSV file.
+        Appends a single row to a CSV file.
+
+        This function checks that the provided file exists and has a '.csv' extension.
+        The given list of strings is appended as a new row. Errors are caught and logged.
 
         Args:
-            file_path (Path | str): Path to the CSV file.
-            row (list[str]): List of strings representing a row.
+            file_path (Union[Path, str]): Path to the CSV file.
+            row (list[str]): A list of strings representing the row to append.
 
         Returns:
-            bool: True if the row was successfully written, False on failure.
+            bool: True if the row was successfully written, False otherwise.
         """
         try:
             path = Path(file_path)
@@ -42,13 +46,14 @@ class CsvFileHandler:
     @staticmethod
     def read_as_matrix(file_path: Union[Path, str]) -> list[list[str]]:
         """
-        Reads a CSV file and returns its contents as a matrix (list of rows).
+        Reads a CSV file and returns its contents as a matrix of strings.
 
         Args:
-            file_path (Path | str): Path to the CSV file.
+            file_path (Union[Path, str]): Path to the CSV file.
 
         Returns:
-            list[list[str]]: Matrix of strings representing the CSV content.
+            list[list[str]]: Matrix of strings representing the CSV content,
+                             or an empty list if an error occurs.
         """
         try:
             path = Path(file_path)
@@ -63,9 +68,7 @@ class CsvFileHandler:
 
             with path.open(mode='r', newline='', encoding='utf-8') as file:
                 reader = csv.reader(file)
-                matrix = [row for row in reader]
-
-            return matrix
+                return [row for row in reader]
 
         except OSError as os_err:
             print(f"[ERROR] File system error: {os_err}")
@@ -77,37 +80,42 @@ class CsvFileHandler:
     @staticmethod
     def write_matrix_to_csv(file_path: Union[Path, str], matrix: list[list[str]]) -> bool:
         """
-        Writes a matrix to a CSV file, ensuring:
-        - Each row is exactly 6 columns (padded or truncated with "").
-        - Matrix is written as-is up to 30 rows (no padding to 30).
-        - If matrix is empty, the CSV file will be cleared.
+        Writes a matrix to a CSV file, ensuring each row is 6 columns long.
+        - Pads short rows with empty strings.
+        - Truncates long rows to 6 columns.
+        - Writes up to 30 rows only.
+        - If matrix is empty, the CSV file is cleared.
 
         Args:
-            file_path (Path | str): The path to the CSV file to write.
-            matrix (list[list[str]]): The matrix of string rows.
+            file_path (Union[Path, str]): The path to the CSV file.
+            matrix (list[list[str]]): The matrix to write (rows of strings).
 
         Returns:
             bool: True if writing was successful, False otherwise.
         """
         try:
             path = Path(file_path)
-            processed_matrix: list[list[str]] = []
+
+            if not path.suffix.lower() == ".csv":
+                print(f"[ERROR] File '{path}' is not a CSV file.")
+                return False
 
             if not matrix:
-                # Clear the file
-                path.write_text("")
+                # Clear file if matrix is empty
+                path.write_text("", encoding='utf-8')
                 return True
 
-            # Process existing rows up to 30
-            for row in matrix[:30]:
-                processed_matrix.append((row + [""] * 6)[:6])
+            processed_matrix = [(row + [""] * 6)[:6] for row in matrix[:30]]
 
-            with path.open('w', newline='', encoding='utf-8') as file:
+            with path.open(mode='w', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
                 writer.writerows(processed_matrix)
 
             return True
 
+        except OSError as os_err:
+            print(f"[ERROR] File system error: {os_err}")
+            return False
         except Exception as e:
             print(f"[ERROR] Failed to write matrix to CSV: {e}")
             return False
