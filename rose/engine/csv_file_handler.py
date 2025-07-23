@@ -1,6 +1,7 @@
 import csv
 from pathlib import Path
 from typing import Union
+
 class CsvFileHandler:
     @staticmethod
     def add_line(file_path: Union[Path, str], row: list[str]) -> bool:
