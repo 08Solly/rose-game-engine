@@ -54,11 +54,11 @@ class FileRecieverServer(BaseHTTPRequestHandler):
             if disposition != 'form-data' or 'filename' not in params:
                 continue
 
-
+            file_name = os.path.basename(params["filename"])
             file_data = part.get_payload(decode=True)
 
             os.makedirs(UPLOAD_DIR, exist_ok=True)
-            filepath = os.path.join(UPLOAD_DIR, "map/custom_map.csv")
+            filepath = os.path.join(UPLOAD_DIR, file_name)
             with open(filepath, 'wb') as f:
                 f.write(file_data)
 
