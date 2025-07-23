@@ -1,9 +1,10 @@
 import csv
 from pathlib import Path
+from typing import Union
 
 class CsvFileHandler:
     @staticmethod
-    def add_line(file_path: Path | str, row: list[str]) -> bool:
+    def add_line(file_path: Union[Path, str], row: list[str]) -> bool:
         """
         Appends a list of strings as a new row to a CSV file.
 
@@ -39,7 +40,7 @@ class CsvFileHandler:
             return False
 
     @staticmethod
-    def read_as_matrix(file_path: Path | str) -> list[list[str]]:
+    def read_as_matrix(file_path: Union[Path, str]) -> list[list[str]]:
         """
         Reads a CSV file and returns its contents as a matrix (list of rows).
 
