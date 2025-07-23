@@ -2,73 +2,73 @@ import csv
 from pathlib import Path
 
 class CsvFileHandler:
-
     @staticmethod
     def add_line(file_path: Path | str, row: list[str]) -> bool:
         """
-        Appends a list of strings as a new row to the CSV file.
+        Appends a list of strings as a new row to a CSV file.
 
-        Parameters:
-        row (list[str]): A list of strings to write as one row.
+        Args:
+            file_path (Path | str): Path to the CSV file.
+            row (list[str]): List of strings representing a row.
 
         Returns:
-        bool: True if the write succeeded.
+            bool: True if the row was successfully written, False on failure.
         """
-
-        # Making sure file path is type Path
-        file_path: Path = Path(file_path)
-
-        # Checking if file exists
-        if not file_path.exists():
-            print(f"File {file_path.name} doesnt exist")
-            return False
-
-        # Checking if file is CSV
-        if not file_path.name.endswith('.csv'):
-            print(f"File {file_path.name} isn't CSV file")
-            return False
-
-
-        # Writing to file
         try:
-            with open(file_path, mode='a', newline='', encoding='utf-8') as file:
+            path = Path(file_path)
+
+            if not path.exists():
+                print(f"[ERROR] File '{path}' does not exist.")
+                return False
+
+            if path.suffix.lower() != ".csv":
+                print(f"[ERROR] File '{path}' is not a CSV file.")
+                return False
+
+            with path.open(mode='a', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
-                writer.writerow(row)  # Append the list as a new row
+                writer.writerow(row)
+
             return True
+
+        except OSError as os_err:
+            print(f"[ERROR] File system error: {os_err}")
+            return False
         except Exception as e:
-            print(f"Error writing to CSV: {e}")
+            print(f"[ERROR] Unexpected error while writing to CSV: {e}")
             return False
 
     @staticmethod
     def read_as_matrix(file_path: Path | str) -> list[list[str]]:
         """
-        Reads the CSV file and returns its content as a matrix (list of rows).
+        Reads a CSV file and returns its contents as a matrix (list of rows).
+
+        Args:
+            file_path (Path | str): Path to the CSV file.
 
         Returns:
-        list[list[str]]: The content of the CSV as a list of string rows.
+            list[list[str]]: Matrix of strings representing the CSV content.
         """
-
-        # Making sure file path is type Path
-        file_path: Path = Path(file_path)
-
-        # Checking if file exists
-        if not file_path.exists():
-            print(f"File {file_path.name} doesnt exist")
-            return []
-
-        # Checking if file is CSV
-        if not file_path.name.endswith('.csv'):
-            print(f"File {file_path.name} isn't CSV file")
-            return []
-
-        # Getting track as matrix from file
-        matrix = []
         try:
-            with file_path.open('r', newline='', encoding='utf-8') as file:
+            path = Path(file_path)
+
+            if not path.exists():
+                print(f"[ERROR] File '{path}' does not exist.")
+                return []
+
+            if path.suffix.lower() != ".csv":
+                print(f"[ERROR] File '{path}' is not a CSV file.")
+                return []
+
+            with path.open(mode='r', newline='', encoding='utf-8') as file:
                 reader = csv.reader(file)
-                for row in reader:
-                    matrix.append(row)
+                matrix = [row for row in reader]
+
             return matrix
+
+        except OSError as os_err:
+            print(f"[ERROR] File system error: {os_err}")
+            return []
         except Exception as e:
-            print(f"Error reading CSV: {e}")
+            print(f"[ERROR] Unexpected error while reading from CSV: {e}")
             return []
