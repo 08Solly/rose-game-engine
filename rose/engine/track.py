@@ -14,7 +14,7 @@ class Track(object):
         self.custom_index = 0
         self.map_name = os.listdir("map")
         if self.map_name != [] and ("disabled" not in self.map_name[0]):
-            self.custom_map = csv_file_handler.CsvFileHandler.read_as_matrix(f"map/{self.map_name[0]}")
+            self.custom_map = csv_file_handler.CsvFileHandler.read_as_matrix(os.path.join("map", f"{self.map_name[0]}"))
 
 
 
