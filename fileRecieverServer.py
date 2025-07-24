@@ -21,7 +21,7 @@ def parse_content_disposition(header_value):
     return disposition, params
 
 
-class FileRecieverServer(BaseHTTPRequestHandler):
+class FileReceiverServer(BaseHTTPRequestHandler):
 
     def _set_cors_headers(self):
         self.send_header('Access-Control-Allow-Origin', '*')  # Allow all origins
