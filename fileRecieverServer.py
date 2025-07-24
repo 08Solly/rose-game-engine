@@ -1,10 +1,9 @@
 import os
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler
 from email.parser import BytesParser
 from email.policy import default
 import re
-import threading
-import time
+
 
 UPLOAD_DIR = 'map'
 UPLOAD_MAP_NAME = 'custom_map.csv'
@@ -78,7 +77,6 @@ class FileRecieverServer(BaseHTTPRequestHandler):
                 self.wfile.write(b"Missing boundary")
                 return
 
-            boundary = match.group(1)
             content_length = int(self.headers.get('Content-Length', 0))
             body = self.rfile.read(content_length)
 
@@ -94,7 +92,6 @@ class FileRecieverServer(BaseHTTPRequestHandler):
                 if disposition != 'form-data' or 'filename' not in params:
                     continue
 
-                filename = os.path.basename(params['filename'])
                 file_data = part.get_payload(decode=True)
 
                 os.makedirs(UPLOAD_DIR, exist_ok=True)
